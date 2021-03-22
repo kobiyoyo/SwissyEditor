@@ -1,24 +1,24 @@
+// React
 import React from 'react';
 
+// Router
+import { Route, Switch } from 'react-router-dom';
+import FileDetail from './components/Files/FileDetail';
+import FileDisplay from './components/Files/FileDisplay';
 
-const App: React.FC = () =>{
-  return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+// Component
+import FileList from './components/Files/FileList';
+import Footer from './components/Pages/Footer';
+const App: React.FC = () => (
+  <main>
+    <Switch>
+      <Route path="/files" component={FileList} exact />
+      <Route path="/file-display/:id" component={FileDisplay} exact />
+      <Route path="/file/:id" component={FileDetail} exact />
+    </Switch>
+
+  </main>
+
+);
 
 export default App;
