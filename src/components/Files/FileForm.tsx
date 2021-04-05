@@ -1,5 +1,5 @@
 // React
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 
 // Formik
 import {
@@ -16,26 +16,20 @@ import {
   Button,
 } from 'rsuite';
 
-// Context
-
+// External
 import { v4 as uuidv4 } from 'uuid';
-import { RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps, useHistory } from 'react-router-dom';
 import { GlobalContext } from '../../context/GlobalState';
 import { addFile, editFile } from '../../context/action';
 
 // Types
 import { FileItem } from '../../context/types';
 
-// Router
-// uuid
-
-interface RouterProps { // type for `match.params`
+// type for `match.params`
+interface RouterProps {
   id: string; // must be type `string` since value comes from the URL
 }
-interface FDProps extends RouteComponentProps<RouterProps> {
-  data: FileItem[];
-}
-
+type FDProps = RouteComponentProps<RouterProps>;
 interface Values {
   title: string;
   id: string;
@@ -43,26 +37,39 @@ interface Values {
 }
 
 const FileDetail: React.FC <FDProps | null> = (props: FDProps): React.ReactElement => {
-  const { data, match, history } = props;
-  console.log(match.params.id);
-  const isMode = data !== null;
+  const { match } = props;
+
+  const isMode = !!match.params.id;
   const myuuid = uuidv4();
+  const currentFileId = match.params.id;
+  const { state: { files } } = useContext(GlobalContext);
+  const [selectedFile, setSelectedFile] = useState<FileItem>();
+  const history = useHistory();
+
+  useEffect(() => {
+    const id = currentFileId;
+    const selectedData = files.find((file) => file.id === id) as Pick<FileItem, keyof FileItem>;
+    console.log(selectedData);
+    setSelectedFile(selectedData);
+  }, [currentFileId, files]);
+
   const initialValues = {
-    title: '',
-    id: myuuid,
-    content: '',
+    title: selectedFile ? selectedFile?.title : '',
+    id: selectedFile ? selectedFile?.id : myuuid,
+    content: selectedFile ? selectedFile?.content : '',
   };
 
   const { dispatch } = useContext(GlobalContext);
 
   const onSubmit = (values:Values, { setSubmitting }: FormikHelpers<Values>) => {
-    if (isMode) {
+    if (!isMode) {
       dispatch((addFile(values)));
       setSubmitting(false);
       history.push(`/display/${myuuid}`);
     } else {
       dispatch(editFile(values));
       setSubmitting(false);
+      history.push(`/display/${selectedFile?.id as string}`);
     }
   };
   const styles = {
@@ -97,6 +104,7 @@ const FileDetail: React.FC <FDProps | null> = (props: FDProps): React.ReactEleme
       border: '0.5px solid grey',
       padding: '1.5rem',
       outlineWidth: '0',
+      boxShadow: 'inset 1px 1px 0 rgb(0 0 0 / 10%), inset 0 -1px 0 rgb(0 0 0 / 7%)',
     },
     submitButton: {
       marginTop: '3rem',
@@ -110,6 +118,7 @@ const FileDetail: React.FC <FDProps | null> = (props: FDProps): React.ReactEleme
       <Formik
         initialValues={initialValues}
         onSubmit={onSubmit}
+        enableReinitialize
       >
         <Form style={styles.formBody}>
           <Field id="title" name="title" placeholder="Title" style={styles.fieldBody} />
@@ -136,8 +145,6 @@ const FileDetail: React.FC <FDProps | null> = (props: FDProps): React.ReactEleme
           <Button style={styles.submitButton} type="submit">View</Button>
         </Form>
       </Formik>
-      {/* <Input style={styles.inputArea}
-       componentClass="textarea" rows={14} placeholder="Input text here" /> */}
     </Container>
   );
 };

@@ -24,7 +24,7 @@ const App: React.FC = () => (
         <Route path="/" component={Home} exact />
         <Route path="/files" component={FileList} exact />
         <Route path="/display/:id" component={FileDetail} exact />
-        <Route path="/edit/:id" component={FileForm} exact />
+        <Route path="/display/edit/:id" component={FileForm} exact />
         <Route path="/add/" component={FileForm} exact />
       </Switch>
       {/* <Footer /> */}

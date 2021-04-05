@@ -11,12 +11,12 @@ const initialState: GlobalContextState = {
   files: [{
     id: '1',
     title: 'bad boy',
-    content: '#hello world',
+    content: '#helsdsadalo world',
   },
   {
     id: '2',
     title: 'Good lad',
-    content: '#hello world',
+    content: '#helladdadaoijoijo world',
   },
   {
     id: '3',
@@ -26,7 +26,7 @@ const initialState: GlobalContextState = {
   {
     id: '4',
     title: 'Shy boy',
-    content: '#hello world',
+    content: '#okokohello world',
   }],
 };
 

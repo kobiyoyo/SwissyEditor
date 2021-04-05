@@ -12,34 +12,50 @@ import {
   Row,
   Col,
   Button,
+  Panel,
+  ButtonGroup,
+  ButtonToolbar,
 } from 'rsuite';
 
-// Context
+// EXternal Components
 import { useHistory } from 'react-router-dom';
 import { GlobalContext } from '../../context/GlobalState';
 
 // Types
 import { FileItem } from '../../context/types';
-
-// Route
+import { removeFile } from '../../context/action';
 
 const FileList: React.FC = () => {
   const history = useHistory();
   interface LoudProps {
-    id: number;
+    id: string;
     title: string;
     content: string;
     prevState:null;
   }
-  const { state: { files } } = useContext(GlobalContext);
+  const { state: { files }, dispatch } = useContext(GlobalContext);
   const [filesData, setFilesData] = useState<LoudProps | null >(null);
-  const {
-    Column, HeaderCell, Cell, Pagination,
-  } = Table;
+  const [search, setSearch] = useState<string>('');
 
+  const displayFiles = files.map((file) => (
+    search === '' || file.title.toLowerCase().includes(search.toLowerCase())
+  ));
   const handleAdd = () => {
     history.push('/add');
   };
+  const handleEdit = (id: string) => {
+    history.push(`/display/edit/${id}`);
+  };
+  const handleDelete = (id: string) => {
+    dispatch(removeFile(id));
+  };
+
+  // Autocomplete
+  const searchData = [] as string[];
+  files.map((file) => (
+    searchData.push(file.title)
+  ));
+
   const styles = {
     file: {
       display: 'flex',
@@ -47,7 +63,9 @@ const FileList: React.FC = () => {
       justifyContent: 'space-evenly',
     },
     iconSize: {
-      fontSize: '10rem',
+      fontSize: '18rem',
+      marginBottom: '3rem',
+
     },
     marginTop: {
       marginTop: '3rem',
@@ -60,24 +78,15 @@ const FileList: React.FC = () => {
       padding: '1rem',
     },
     search: {
-
       marginBottom: '4rem',
+    },
+    noFiles: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
     },
   };
 
-  const loud = (data:FileItem[]) => {
-    //
-    console.log(data);
-    alert(filesData?.title);
-  };
-  const searchData = [
-    'HYPER Advertiser',
-    'HYPER Web Analytics',
-    'HYPER Video Analytics',
-    'HYPER DMP',
-    'HYPER Ad Serving',
-    'HYPER Data Discovery',
-  ];
   return (
     <Container style={styles.body}>
 
@@ -87,10 +96,6 @@ const FileList: React.FC = () => {
             {' '}
             <InputGroup style={styles.search}>
               <AutoComplete data={searchData} />
-              <InputGroup.Button>
-                <Icon icon="search" />
-              </InputGroup.Button>
-
             </InputGroup>
           </Col>
           <Col xs={24} sm={24} md={4}>
@@ -100,35 +105,22 @@ const FileList: React.FC = () => {
           </Col>
         </Row>
       </Grid>
-      <Table
-        virtualized
-        height={400}
-        data={files}
-        onRowClick={
-        (data) => {
-          setFilesData(data);
-          loud(data);
-        }
-      }
-      >
-        <Column width={200} align="center">
-          <HeaderCell>Id</HeaderCell>
-          <Cell dataKey="id" />
-        </Column>
-        <Column width={730} align="center">
-          <HeaderCell>Title</HeaderCell>
-          <Cell dataKey="title" />
-        </Column>
-        <Column width={130} fixed="right">
-          <HeaderCell>Action</HeaderCell>
-          <Cell dataKey="id">
-            <span>
-              <a href="/">View</a>
-            </span>
-          </Cell>
-        </Column>
-      </Table>
-
+      <Row>
+        {files.length > 0 ? files.map((file) => (
+          <Col md={6} sm={12} style={styles.marginTop}>
+            <Panel bordered header={file.title}>
+              <Icon icon="file-text" style={styles.iconSize} />
+              <ButtonToolbar>
+                <ButtonGroup>
+                  <Button onClick={() => handleEdit(file.id)}>Edit</Button>
+                  <Button onClick={() => handleDelete(file.id)}>Delete</Button>
+                </ButtonGroup>
+              </ButtonToolbar>
+            </Panel>
+          </Col>
+        ))
+          : <div style={styles.noFiles}><h1>No Files</h1></div>}
+      </Row>
     </Container>
   );
 };

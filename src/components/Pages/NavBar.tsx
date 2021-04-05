@@ -22,7 +22,7 @@ const NavBar: React.FC = () => {
     width: '7rem',
     textAlign: 'center' as const,
   };
-  const minStyles = {
+  const styles = {
     base: {
       color: '#fff',
     },
@@ -32,18 +32,21 @@ const NavBar: React.FC = () => {
 
     centerButton: {
       ...button,
+      display: 'none',
     },
     rightButton: {
       ...button,
       borderBottomRightRadius: '5rem',
       borderTopRightRadius: '5rem',
       marginLeft: '1rem',
+      display: 'none',
     },
     leftButton: {
       ...button,
       borderBottomLeftRadius: '5rem',
       borderTopLeftRadius: '5rem',
       marginRight: '1rem',
+      display: 'none',
     },
     navLink: {
       color: 'white',
@@ -63,7 +66,6 @@ const NavBar: React.FC = () => {
     },
 
     displayMenu: {
-
       display: 'flex',
       justifyContent: 'space-evenly',
       flexDirection: 'column',
@@ -75,47 +77,25 @@ const NavBar: React.FC = () => {
     },
 
   };
-  const maxStyles = {
-    ...minStyles,
-    aside: {
-      flex: '1 auto',
-      background: 'blue',
-      order: 2,
-    },
-
-    displayNoMenu: {
-
-      display: 'block',
-
-    },
-
-  };
-
-  const styles = function () {
-    if (window.innerWidth < 800) {
-      return minStyles;
-    }
-    return maxStyles;
-  };
 
   return (
     <>
 
-      <Navbar style={styles().navStyles}>
+      <Navbar style={styles.navStyles}>
         <Navbar.Header>
-          <a href="/" className="navbar-brand logo"><img style={styles().navLogo} src={logo} alt="logo" /></a>
+          <a href="/" className="navbar-brand logo"><img style={styles.navLogo} src={logo} alt="logo" /></a>
         </Navbar.Header>
         <Navbar.Body>
           <Nav>
-            <Nav.Item style={styles().leftButton}><NavLink style={styles().navLink} to="/"><Icon icon="edit" /></NavLink></Nav.Item>
-            <Nav.Item style={styles().centerButton}><NavLink style={styles().navLink} to="/"><Icon icon="eye" /></NavLink></Nav.Item>
-            <Nav.Item style={styles().rightButton}><NavLink style={styles().navLink} to="/"><Icon icon="plus" /></NavLink></Nav.Item>
+            <Nav.Item style={styles.leftButton}><NavLink style={styles.navLink} to="/"><Icon icon="edit" /></NavLink></Nav.Item>
+            <Nav.Item style={styles.centerButton}><NavLink style={styles.navLink} to="/"><Icon icon="eye" /></NavLink></Nav.Item>
+            <Nav.Item style={styles.rightButton}><NavLink style={styles.navLink} to="/"><Icon icon="plus" /></NavLink></Nav.Item>
           </Nav>
-          <Nav pullRight style={styles().displayNoMenu}>
-            <Nav.Item eventKey="B" style={styles().navButton}><NavLink style={styles().navLink} to="/">Home</NavLink></Nav.Item>
-            <Nav.Item eventKey="B" style={styles().navButton}><NavLink style={styles().navLink} to="/">Sign in</NavLink></Nav.Item>
-            <Nav.Item eventKey="E" style={styles().navButton}><NavLink style={styles().navLink} to="/files">Files</NavLink></Nav.Item>
-            <Nav.Item eventKey="C" style={styles().navButton} icon={<Icon icon="avatar" />}><NavLink style={styles().navLink} to="/">Online</NavLink></Nav.Item>
+          <Nav pullRight>
+            <Nav.Item eventKey="B" style={styles.navButton}><NavLink style={styles.navLink} to="/">Home</NavLink></Nav.Item>
+            <Nav.Item eventKey="B" style={styles.navButton}><NavLink style={styles.navLink} to="/">Sign in</NavLink></Nav.Item>
+            <Nav.Item eventKey="E" style={styles.navButton}><NavLink style={styles.navLink} to="/files">Files</NavLink></Nav.Item>
+            <Nav.Item eventKey="C" style={styles.navButton} icon={<Icon icon="avatar" />}><NavLink style={styles.navLink} to="/">Online</NavLink></Nav.Item>
           </Nav>
         </Navbar.Body>
       </Navbar>
